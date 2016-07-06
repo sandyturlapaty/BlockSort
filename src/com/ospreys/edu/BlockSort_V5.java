@@ -305,14 +305,14 @@ public class BlockSort_V5{
 	public int threeApproximationMove(StringBuffer sb)  {
 		int reversalCount = findReversals();
 		int inversionCount = findInversions();
-		sb.append(reversalCount).append("\t\t").append(inversionCount).append("\t\t\t"); // to generate output file
+		sb.append(reversalCount).append("\t\t\t\t").append(inversionCount).append("\t\t\t"); // to generate output file
 		int numberOfMoves=0;
 		boolean moveOnebeforeTwo = moveAndMerge(1, false);
 		if(moveOnebeforeTwo){
 			numberOfMoves= numberOfMoves + 1;
 		} 
 		Block one = getBlockByValue(1);
-		System.out.println("Values : "+toString());
+		//System.out.println("Values : "+toString());
 		//System.out.println("List Size after moving 1--> "+list.size());
 		int j = one.getSuc();
 		int blockPos = 0;
@@ -321,9 +321,10 @@ public class BlockSort_V5{
 			Block obj = getBlockByValue(j);
 			if(null != obj){
 				boolean success = moveAndMerge(j, true);	
-				System.out.println("Values : "+toString());
+				//System.out.println("Values : "+toString());
 				//System.out.println("List Size after moving "+ i +" --> "+list.size());
-				j=obj.getSuc();
+				Block temp = getBlockByValue(j);
+				j=temp.getSuc();
 				if(success){
 					numberOfMoves= numberOfMoves + 1;
 				}
@@ -332,13 +333,13 @@ public class BlockSort_V5{
 			}
 		}
 		double denominator = Math.max(Math.max(reversalCount, inversionCount),originalList.size()-1-inversionCount-reversalCount);
-		System.out.println("denominator --> "+denominator);
-		sb.append(numberOfMoves);
+		//System.out.println("denominator --> "+denominator);
+		sb.append("\t\t"+numberOfMoves);
 		if(denominator>0){
 			double ratio = numberOfMoves/denominator;
-			sb.append("\t").append(ratio);
+			sb.append("\t\t").append(ratio);
 		}
-		System.out.println("total number of moves to sort the permutation --> "+numberOfMoves);
+		//System.out.println("total number of moves to sort the permutation --> "+numberOfMoves);
 		return numberOfMoves;
 	}
 	
@@ -395,7 +396,7 @@ public class BlockSort_V5{
 				reversalCount= reversalCount + 1;
 			}
 		}
-		System.out.println("Number of reversals --> "+reversalCount);
+		//System.out.println("Number of reversals --> "+reversalCount);
 		return reversalCount;
 	}
 	
@@ -422,7 +423,7 @@ public class BlockSort_V5{
 				}
 			}
 		}
-		System.out.println("Number of inversions --> " + inversionCount);
+		//System.out.println("Number of inversions --> " + inversionCount);
 		return inversionCount;
 	}
 	
@@ -482,8 +483,8 @@ public class BlockSort_V5{
 				values = values + getValues(longestrunBlock.getPre(), longestrunBlock.getSuc()) + " ";
 				
 			}
-			System.out.println("longestrun ----> "+values);
-			System.out.println("size : "+listSize);
+			//System.out.println("longestrun ----> "+values);
+			//System.out.println("size : "+listSize);
 		}
 	}
 	
@@ -500,25 +501,25 @@ public class BlockSort_V5{
 			Block block = temp.get(i);
 			if(!block.isInLongestRun()){
 				if(block.getPre() == 0){
-					System.out.println("Moving block with value "+(block.getPre()+1)+",false");
+					//System.out.println("Moving block with value "+(block.getPre()+1)+",false");
 					moveAndMerge(block.getPre()+1, false);
 					numberOfMoves= numberOfMoves + 1;
 				} else {
-					System.out.println("Moving block with value "+(block.getPre()+1)+",true");
+					//System.out.println("Moving block with value "+(block.getPre()+1)+",true");
 					moveAndMerge(block.getPre()+1, true);
 					numberOfMoves = numberOfMoves + 1;
 				}
-				System.out.println(toString());
+				//System.out.println(toString());
 			}
 		}
 		sb.append(numberOfMoves);
 		double denominator = Math.max(Math.max(reversalCount, inversionCount), getInputsize()-1-reversalCount-inversionCount);
-		System.out.println("Total Reversal Count:" +reversalCount);
-		System.out.println("Total Inversion Count:" +inversionCount);
-		System.out.println("Total Number Of Moves:" +numberOfMoves);
+		//System.out.println("Total Reversal Count:" +reversalCount);
+		//System.out.println("Total Inversion Count:" +inversionCount);
+		//System.out.println("Total Number Of Moves:" +numberOfMoves);
 		if(denominator>0){
 			double ratio = numberOfMoves/denominator;
-			System.out.println("Approimation Ratio :"+ ratio);
+			//System.out.println("Approimation Ratio :"+ ratio);
 			sb.append("\t\t\t").append(ratio);
 		}
 	
