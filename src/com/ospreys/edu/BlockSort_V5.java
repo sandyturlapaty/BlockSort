@@ -458,7 +458,15 @@ public class BlockSort_V5{
 				boolean movementInd = true;				
 				if(getBlockReductionCount(i, movementInd) >1 || reversalReductionCount(i)>=1 || inversionReductionCount(i)>=1){
 					//greedyInd = true;
-					moveSuccessInd = moveAndMerge(i, movementInd);
+					if(i==1){ //block 1
+						moveSuccessInd = moveAndMerge(i, false);
+					} else { //blocks containing element 2 and higher
+						moveSuccessInd = moveAndMerge(i, movementInd);
+						if(!moveSuccessInd){
+							moveSuccessInd = moveAndMerge(i, !movementInd);
+						}
+					}
+					
 					/*if(i==1){ //block 1
 						moveSuccessInd = moveAndMerge(i, false);
 					} else { //blocks containing element 2 and higher
