@@ -48,7 +48,7 @@ public class ThreeApproximationOutputFile {
 				size = size+1;
 				blockSort.add(Integer.valueOf((String)st.nextElement()));
 			}
-			blockSort.setInputsize(size);
+			blockSort.setPermutationSize(size);
 			blockSort.threeApproximationMove(sb);
 			sb.append("\n");
 			System.out.println("\n");

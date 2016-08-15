@@ -1,30 +1,29 @@
 package com.ospreys.edu;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
 
 public class BlockSort_V5{
 	
-	private int inputsize;
+	private int permutationSize;
 	
 	private LinkedList<Block> originalList= new LinkedList<Block>(); // original input permutation list
 	
 	private LinkedList<LinkedList<Block>> listOfAllSubsequences= new LinkedList<LinkedList<Block>>();
 	
 	/**
-	 * @return the inputsize
+	 * @return the permutationSize
 	 */
-	public int getInputsize() {
-		return inputsize;
+	public int getPermutationSize() {
+		return permutationSize;
 	}
 
 	/**
-	 * @param inputsize the inputsize to set
+	 * @param permutation size the permutationSize to set
 	 */
-	public void setInputsize(int inputsize) {
-		this.inputsize = inputsize;
+	public void setPermutationSize(int permutationSize) {
+		this.permutationSize = permutationSize;
 	}
 	
 	public LinkedList<Block> getList() {
@@ -134,7 +133,7 @@ public class BlockSort_V5{
 	/**
 	 * @param valueToBeMoved
 	 * @return
-	 */
+	 *//*
 	public int getSucPosition(int valueToBeMoved) {
 		for (int i = 0; i < originalList.size(); i++) {
 			Block obj = originalList.get(i);
@@ -143,13 +142,31 @@ public class BlockSort_V5{
 			}
 		}
 		return -1;
+	}*/
+	
+	/**
+	 * @param valueToBeMoved
+	 * @return
+	 */
+	public int getSucPosition(int valueToBeMoved) {
+		Block obj = getBlockByValue(valueToBeMoved);
+		return getBlockPosition(obj.getSuc());
+	}
+	
+	/**
+	 * @param valueToBeMoved
+	 * @return
+	 */
+	public int getPrePosition(int valueToBeMoved) {
+		Block obj = getBlockByValue(valueToBeMoved);
+		return getBlockPosition(obj.getPre());
 	}
 	
 	
 	/**
 	 * @param valueToBeMoved
 	 * @return
-	 */
+	 *//*
 	public int getPrePosition(int valueToBeMoved) {
 		for (int i = 0; i < originalList.size(); i++) {
 			Block obj = originalList.get(i);
@@ -158,7 +175,7 @@ public class BlockSort_V5{
 			}
 		}
 		return -1;
-	}
+	}*/
 	
 	/**
 	 * @param value
@@ -188,7 +205,7 @@ public class BlockSort_V5{
 	public int getBlockPosition(int objVal) {
 		for (int i = 0; i < originalList.size(); i++) {
 			Block obj = originalList.get(i);
-			if(obj.getPre()+1 == objVal){
+			if(obj.getPre()<objVal && objVal<obj.getSuc()){
 				return i;
 			}
 		}
@@ -219,8 +236,12 @@ public class BlockSort_V5{
 			merge(0,1);
 			movedSuccess = true;
 		} else {
+			Block obj = getBlockByValue(valueToBeMoved);
 			int objPosition = getBlockPosition(valueToBeMoved);
 			if(indicator){
+				if(obj.getSuc()-obj.getPre() >2){
+					valueToBeMoved = obj.getPre()+1;
+				}
 				int prePosition = getPrePosition(valueToBeMoved);
 				if(prePosition==objPosition){
 					//System.out.println("Move not allowed");
@@ -250,6 +271,9 @@ public class BlockSort_V5{
 				}
 			} else {
 				int listSize = originalList.size();
+				if(obj.getSuc()-obj.getPre() >2){
+					valueToBeMoved = obj.getSuc()-1;
+				}
 				int sucPosition = getSucPosition(valueToBeMoved);
 				if(sucPosition==objPosition){
 					//System.out.println("Move not allowed");
@@ -303,6 +327,7 @@ public class BlockSort_V5{
 	 * @return
 	 */
 	public int threeApproximationMove(StringBuffer sb)  {
+		int size = originalList.size();
 		int reversalCount = findReversals();
 		int inversionCount = findInversions();
 		sb.append(reversalCount).append("\t\t\t\t").append(inversionCount).append("\t\t\t"); // to generate output file
@@ -316,7 +341,7 @@ public class BlockSort_V5{
 		//System.out.println("List Size after moving 1--> "+list.size());
 		int j = one.getSuc();
 		int blockPos = 0;
-		while(blockPos != -1){
+		while(blockPos != -1 && originalList.size()>1){
 			blockPos = getBlockPosition(j);
 			Block obj = getBlockByValue(j);
 			if(null != obj){
@@ -332,7 +357,14 @@ public class BlockSort_V5{
 				break;
 			}
 		}
-		double denominator = Math.max(Math.max(reversalCount, inversionCount),originalList.size()-1-inversionCount-reversalCount);
+		if(originalList.size()>1){
+			System.err.println("Block moves incomplete..!!! Attempting to continue");
+			for (int i = 0; i < originalList.size(); i++) {
+				Block block = originalList.get(i);
+				moveAndMerge(block.getSuc(), false);
+			}	
+		}
+		double denominator = Math.max(Math.max(reversalCount, inversionCount),size-1-inversionCount-reversalCount);
 		//System.out.println("denominator --> "+denominator);
 		sb.append("\t\t"+numberOfMoves);
 		if(denominator>0){
@@ -344,27 +376,318 @@ public class BlockSort_V5{
 	}
 	
 	
-/*	public int findbestMove() {
-		int value =0;
-		int initialSize = list.size();
-		int maxBlockRed = 0;
-		LinkedList<Block> tempList = getCopy();
-		for (int i = 1; i < getInputsize(); i++) {
-			boolean moveSuccess = moveAndMerge(i, true);
-			if(moveSuccess){
-				int listSizeAfterMove = list.size();
-				int blockRed = initialSize-listSizeAfterMove;
-				if(blockRed==3){
-					return i;
-				} else if(blockRed > maxBlockRed){
-					maxBlockRed = blockRed;
-					value = i;
+/*	*//**
+	 * @return
+	 *//*
+	public int greedyAlgorithmMoveCount(StringBuffer sb){
+		int size = originalList.size();
+		int inversionCount = findInversions();
+		int reversalCount = findReversals();
+		sb.append(reversalCount).append("\t\t\t\t").append(inversionCount).append("\t\t\t");
+		int noOfMoves = 0;
+		int blockRedCount = 0;
+		int listSize = getInputsize();
+		for (int i = 1; i <= listSize; i++) {
+			//System.out.println("Checking element : "+i);
+			blockRedCount = blockReductionCount(i, true);
+			if(blockRedCount>1){
+				//System.out.println("moving element : "+i);
+				boolean moveSuccessInd = moveAndMerge(i, true);
+				if(moveSuccessInd){
+					noOfMoves++;
 				}
-				list = tempList;
-			} 
+			} else{
+				//System.out.println("Checking element : "+i+" , false");
+				blockRedCount = blockReductionCount(i, false);
+				if(blockRedCount>1){
+					//System.out.println("moving element : "+i);
+					boolean moveSuccessInd = moveAndMerge(i, false);
+					if(moveSuccessInd){
+						noOfMoves++;
+					}
+				}
+			}
 		}
-		return value;
+		if(blockRedCount<2){
+			for (int i = 1; i <= listSize; i++) {
+				boolean moveSuccessInd = false;
+				if(originalList.size()>1){
+					int revReductionCount = reversalReductionCount(i);
+					//System.out.println("Rev Reduction Count : "+revReductionCount);
+					if(revReductionCount>0){
+						//System.out.println("Moving Element : "+i);
+						if(i==1){ //block 1
+							moveSuccessInd = moveAndMerge(i, false);
+						} else { //blocks containing element 2 and higher
+							moveSuccessInd = moveAndMerge(i, true);
+						}
+						if(moveSuccessInd){
+							noOfMoves++;
+						}
+					}
+				}
+			}
+		}
+		
+		double denominator = Math.max(Math.max(reversalCount, inversionCount),size-1-inversionCount-reversalCount);
+		//System.out.println("denominator --> "+denominator);
+		sb.append("\t\t"+noOfMoves);
+		if(denominator>0){
+			double ratio = noOfMoves/denominator;
+			sb.append("\t\t").append(ratio);
+		}
+		if(blockRedCount==1){
+			StringBuffer sb = new StringBuffer();
+			threeApproximationMove(sb);
+			System.out.println(sb.toString());
+		}
+		return noOfMoves;
 	}*/
+	
+	public int greedyAlgorithm_v1(StringBuffer sb){
+		int size = originalList.size();
+		int inversionCount = findInversions();
+		//boolean greedyInd = false;
+		int reversalCount = findReversals();
+		sb.append(reversalCount).append("\t\t\t\t").append(inversionCount).append("\t\t\t");
+		int noOfMoves = 0;
+		System.out.println("Permutation is : "+toString());
+		if(size>1){
+			for (int i = 1; i <= getPermutationSize(); i++) {
+				boolean moveSuccessInd = false;
+				boolean movementInd = true;				
+				if(getBlockReductionCount(i, movementInd) >1 || reversalReductionCount(i)>=1 || inversionReductionCount(i)>=1){
+					//greedyInd = true;
+					moveSuccessInd = moveAndMerge(i, movementInd);
+					/*if(i==1){ //block 1
+						moveSuccessInd = moveAndMerge(i, false);
+					} else { //blocks containing element 2 and higher
+						moveSuccessInd = moveAndMerge(i, true);
+						if(!moveSuccessInd){
+							moveSuccessInd = moveAndMerge(i, false);
+						}
+					}*/
+					if(moveSuccessInd){
+						noOfMoves++;
+					}
+				} /*else {
+					if(i==1){ //block 1
+						moveSuccessInd = moveAndMerge(i, false);
+					} else { //blocks containing element 2 and higher
+						moveSuccessInd = moveAndMerge(i, true);
+					}
+					if(moveSuccessInd){
+						noOfMoves++;
+					}
+				}*/
+			}
+			if(originalList.size()>1){
+				boolean moveSuccessInd = false;
+				for (int i = 1; i <= getPermutationSize(); i++) {
+				if(i==1){ //block 1
+						moveSuccessInd = moveAndMerge(i, false);
+					} else { //blocks containing element 2 and higher
+						moveSuccessInd = moveAndMerge(i, true);
+					}
+					if(moveSuccessInd){
+						noOfMoves++;
+					}
+				}
+			} else {
+				double denominator = Math.max(Math.max(reversalCount, inversionCount),size-1-inversionCount-reversalCount);
+				//System.out.println("denominator --> "+denominator);
+				sb.append("\t\t"+noOfMoves);
+				if(denominator>0){
+					double ratio = noOfMoves/denominator;
+					sb.append("\t\t").append(ratio);
+				}
+			}
+			
+			/*double denominator = Math.max(Math.max(reversalCount, inversionCount),size-1-inversionCount-reversalCount);
+			//System.out.println("denominator --> "+denominator);
+			sb.append("\t\t"+noOfMoves);
+			if(denominator>0){
+				double ratio = noOfMoves/denominator;
+				sb.append("\t\t").append(ratio);
+			}*/
+		}
+		return noOfMoves;
+	}
+
+private int getBlockReductionCount(int i, boolean movementInd) {
+	int blockRedCount =0;
+	if(originalList.size()>1){
+		if(i==1){ //block 1
+			blockRedCount = calculateBlockReductionCount(i, false);
+			movementInd = false;
+		} else { //blocks containing element 2 and higher
+			blockRedCount = calculateBlockReductionCount(i, true); 
+			if(blockRedCount==0){
+				blockRedCount = calculateBlockReductionCount(i, false); // if (2,true) fails, check calculateblockreducioncount for (2,false)
+				movementInd = false;
+			}
+		}
+		if(blockRedCount>1){
+			System.out.println("Block Reduction for element :"+i);
+		}
+	}
+	return blockRedCount;
+}
+	
+	/**
+	 * @param value
+	 * @param moveIndicator
+	 * @return
+	 */
+	public int calculateBlockReductionCount(int value, boolean moveIndicator) {
+		int blockRedCount = 1;
+		if(moveIndicator){
+			int prePosition = getPrePosition(value);
+			if(prePosition == -1){
+				blockRedCount = 0;
+			} else {
+				blockRedCount=checkAfterElementMovementAfterPre(prePosition,value)+
+						checkAfterRemovingElement(value);
+			}
+		} else {
+			int succPosition = getSucPosition(value);
+			if(succPosition == -1){
+				blockRedCount = 0;
+			} else {
+				blockRedCount=checkAfterElementMovementBeforeSuc(succPosition,value)+
+						checkAfterRemovingElement(value);
+			}
+		}
+		return blockRedCount;
+	}
+	
+	/**
+	 * @param value
+	 * @return
+	 */
+	public int reversalReductionCount(int value) {
+		int objPosition = getBlockPosition(value);
+		if(originalList.size()>1){
+			if(objPosition==-1){
+				return 0;
+			}
+			if(objPosition==0){ // if value is in first position
+				if(originalList.get(objPosition).getSuc()>originalList.get(objPosition+1).getSuc()){ // ex: value =4 ; 4 2 3 and 4 > 2
+					System.out.println("Reversal Reduction for element :"+value);
+					return 1; //indicates reduction in reversal
+				} else {
+					return 0; //indicates no reduction
+				}
+			} else if(objPosition==originalList.size()-1){ // if value occupies last position
+				if(originalList.get(objPosition-1).getSuc()>originalList.get(objPosition).getSuc()){
+					System.out.println("Reversal Reduction for element :"+value);
+					return 1;
+				} else {
+					return 0;
+				}
+			} else { // if value is in the middle of pi
+				if(originalList.get(objPosition-1).getSuc()<originalList.get(objPosition+1).getSuc()){
+					System.out.println("Reversal Reduction for element :"+value);
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		}
+		return 0;
+	}
+	
+	/**
+	 * @param value
+	 * @return
+	 */
+	public int inversionReductionCount(int value) {
+		int objPosition = getBlockPosition(value);
+		int succPosition = getSucPosition(value);
+		int prePosition = getPrePosition(value);
+		if(originalList.size()>1){
+			if(objPosition==-1){
+				return 0;
+			}
+			if((objPosition<prePosition && prePosition<succPosition) || 
+					(prePosition<succPosition && succPosition<objPosition) || 
+					(succPosition<objPosition && objPosition<prePosition)){
+				System.out.println("Inverse Reduction for element :"+value);
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+		return 0;
+	}
+	
+	/**
+	 * @param value
+	 * @return
+	 *//*
+	public int inversionReductionCount(int value) {
+		int objPosition = getBlockPosition(value);
+		int succPosition = getSucPosition(value);
+		int prePosition = getPrePosition(value);
+		if(originalList.size()>1){
+			if(objPosition==-1){
+				return 0;
+			}
+			if(value==1 && succPosition < objPosition){
+				return 1;
+			} else if(prePosition>objPosition && objPosition>succPosition){
+				return 1;
+			} else if(prePosition>objPosition && objPosition<succPosition && prePosition<succPosition){  // example: value= 4 and moving it after pre 3; 4 3 5
+				return 1; //indicates reduction
+			} else {
+				return 0;
+			}
+		}
+		return 0;
+	}*/
+	
+	
+	/**
+	 * @param prePosition
+	 * @param objValue
+	 * @return
+	 */
+	public int checkAfterElementMovementAfterPre(int prePosition, int objValue){
+		int count = 1;
+		if((originalList.size() != prePosition+1) && originalList.get(prePosition+1).getPre()==objValue){
+			count++;
+		}
+		return count;
+	}
+	
+	/**
+	 * @param sucPosition
+	 * @param objValue
+	 * @return
+	 */
+	public int checkAfterElementMovementBeforeSuc(int sucPosition, int objValue){
+		int count = 1;
+		if(sucPosition>0 && originalList.get(sucPosition-1).getSuc()==objValue){
+			count++;
+		} 
+		return count;
+	}
+	
+	/**
+	 * @param value
+	 * @return
+	 */
+	public int checkAfterRemovingElement(int value){
+		int objPosition = getBlockPosition(value);
+		if(objPosition==originalList.size()-1 || objPosition==0){
+			return 0;
+		}
+		if(originalList.get(objPosition-1).getSuc()==originalList.get(objPosition+1).getPre()+1){
+			return 1;
+		} else {
+			return 0;
+		}
+	}
 
 	/**
 	 * @return
@@ -461,6 +784,7 @@ public class BlockSort_V5{
 	}
 	
 	public void longestRun(){
+		allSubsequencesList();
 		int listSize=0;
 		LinkedList<Block> result = null;
 		for (ListIterator<LinkedList<Block>> iterator1 = listOfAllSubsequences.listIterator(); iterator1.hasNext();) {
@@ -488,32 +812,70 @@ public class BlockSort_V5{
 		}
 	}
 	
+	public void runMerging(){
+		allSubsequencesList();
+		LinkedList<Block> result = null;
+		for (ListIterator<LinkedList<Block>> iterator1 = listOfAllSubsequences.listIterator(); iterator1.hasNext();) {
+			LinkedList<Block> subsequencesListObj = (LinkedList<Block>) iterator1.next();
+			if(subsequencesListObj.size()==2){
+				result =subsequencesListObj;
+				break;
+			}
+		}
+		if(null!=result){   //printing longest run block
+			String values = "";
+			for (int i=0; i<result.size();i++) {
+				Block longestrunBlock = result.get(i);
+				for (int j=0; j<originalList.size();j++) {
+					Block originalBlock = originalList.get(j);
+					if(longestrunBlock.getPre() == originalBlock.getPre() && longestrunBlock.getSuc() ==originalBlock.getSuc()){
+						originalBlock.setInLongestRun(true);
+					}
+				}
+				values = values + getValues(longestrunBlock.getPre(), longestrunBlock.getSuc()) + " ";
+				
+			}
+			//System.out.println("longestrun ----> "+values);
+			//System.out.println("size : "+listSize);
+		}
+	}
+	
 	/**
 	 * 
 	 */
 	public void approximationRatioForLongestRun(StringBuffer sb){
+		int size = originalList.size();
 		int reversalCount = findReversals();
 		int inversionCount = findInversions();
 		sb.append(reversalCount).append("\t\t\t\t").append(inversionCount).append("\t\t\t");
 		int numberOfMoves=0;
 		LinkedList<Block> temp = getCopy();
 		for (int i=0;i<temp.size();i++) {
-			Block block = temp.get(i);
-			if(!block.isInLongestRun()){
-				if(block.getPre() == 0){
-					//System.out.println("Moving block with value "+(block.getPre()+1)+",false");
-					moveAndMerge(block.getPre()+1, false);
-					numberOfMoves= numberOfMoves + 1;
-				} else {
-					//System.out.println("Moving block with value "+(block.getPre()+1)+",true");
-					moveAndMerge(block.getPre()+1, true);
-					numberOfMoves = numberOfMoves + 1;
+			if(originalList.size()>1){
+				Block block = temp.get(i);
+				if(!block.isInLongestRun()){
+					if(block.getPre() == 0){
+						System.out.println("Moving block with value "+(block.getPre()+1)+",false");
+						if(moveAndMerge(block.getPre()+1, false)){
+							numberOfMoves= numberOfMoves + 1;
+						}
+					} else {
+						System.out.println("Moving block with value "+(block.getPre()+1)+",true");
+						if(moveAndMerge(block.getPre()+1, true)){
+							numberOfMoves = numberOfMoves + 1;
+						} else {
+							System.out.println("Moving block with value "+(block.getPre()+1)+",false");
+							if(moveAndMerge(block.getPre()+1, false)){
+								numberOfMoves = numberOfMoves + 1;
+							}
+						}
+					}
+					System.out.println(toString());
 				}
-				//System.out.println(toString());
 			}
 		}
 		sb.append(numberOfMoves);
-		double denominator = Math.max(Math.max(reversalCount, inversionCount), getInputsize()-1-reversalCount-inversionCount);
+		double denominator = Math.max(Math.max(reversalCount, inversionCount), size-1-reversalCount-inversionCount);
 		//System.out.println("Total Reversal Count:" +reversalCount);
 		//System.out.println("Total Inversion Count:" +inversionCount);
 		//System.out.println("Total Number Of Moves:" +numberOfMoves);

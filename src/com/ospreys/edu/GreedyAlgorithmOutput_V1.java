@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package com.ospreys.edu;
 
 import java.io.BufferedWriter;
@@ -9,8 +12,12 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-public class ThreeApproxOutput_V2 {
-
+/**
+ * @author sandyturlapaty
+ *
+ */
+public class GreedyAlgorithmOutput_V1 {
+	
 	/**
 	 * @param args
 	 *            the command line arguments
@@ -40,8 +47,9 @@ public class ThreeApproxOutput_V2 {
 			}
 	}
 
-    public static void main(String[] args) throws IOException{
-    	List<String> list = new ArrayList<>();
+	public static void main(String[] args) throws IOException {
+
+		List<String> list = new ArrayList<>();
         Scanner in = new Scanner(System.in);
         //System.out.println("Input array Length");
         int arraylength = in.nextInt();
@@ -50,10 +58,10 @@ public class ThreeApproxOutput_V2 {
             input[i] = in.nextInt();
         }
         Permute(input, 0, list);
-
-        int counter = 1;
+		
+		int counter = 1;
 		StringBuffer sb = new StringBuffer();
-		sb.append("Sl\t\tInput\t\tReversal Count\tInversion Count\t\tNo of moves\t\tRatio\n");
+		sb.append("Sl\t\tInput\t\tReversal Count\tInversion Count\tNo of moves\tRatio\n");
 		for (int i=0; i<list.size();i++) {
 			BlockSort_V5 blockSort = new BlockSort_V5();
 			String line = list.get(i);
@@ -65,27 +73,27 @@ public class ThreeApproxOutput_V2 {
 				size = size+1;
 				blockSort.add(Integer.valueOf((String)st.nextElement()));
 			}
+			blockSort.print();
 			blockSort.setPermutationSize(size);
-			blockSort.threeApproximationMove(sb);
+			blockSort.greedyAlgorithm_v1(sb);
 			sb.append("\n");
-			//System.out.println("\n");
 			counter++;
 		}
 		//System.out.println(sb.toString());
-		writeToFile(sb,input.length);
-    }
-    
-    /**
+		writeToFile(sb, input.length);
+	}
+
+	/**
 	 * @param sb
 	 * @throws IOException
 	 */
 	private static void writeToFile(StringBuffer sb, int inputSize) throws IOException {
-		File file = new File("three_approx_report_"+inputSize+".txt");
+		File file = new File("greedy_algorithm_report_"+inputSize+".txt");
 		FileWriter fw = new FileWriter(file.getAbsoluteFile());
 		BufferedWriter bw = new BufferedWriter(fw);
 		bw.write(sb.toString());
 		bw.close();
 		
 	}
-
+			
 }

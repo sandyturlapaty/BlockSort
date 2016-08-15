@@ -16,7 +16,6 @@ public class BlockSortTest_V5 {
 
 		int[] numbers = readNumsFromCommandLine();
 		BlockSort_V5 blockSort = new BlockSort_V5();
-		blockSort.setInputsize(numbers.length);
 		for (int i = 0; i < numbers.length; i++) {
 			blockSort.add(numbers[i]);
 		}
@@ -24,15 +23,22 @@ public class BlockSortTest_V5 {
 		StringBuffer output = new StringBuffer();
 		//int valueToBeMoved = 3;
 		//blockSort.moveAndMerge(valueToBeMoved, true);
-		/*blockSort.setInputsize(numbers.length);
-		blockSort.threeApproximationMove(output);
+		blockSort.setPermutationSize(numbers.length);
+		//blockSort.threeApproximationMove(output);
 		//System.out.println("List Size After 3rd Move: "+blockSort.getList().size());
-		blockSort.toString();*/
 		
-		blockSort.allSubsequencesList();
+		
+		/*blockSort.allSubsequencesList();
 		blockSort.print();
 		blockSort.longestRun();
-		blockSort.approximationRatioForLongestRun(output);
+		blockSort.approximationRatioForLongestRun(output);*/
+		
+		/*for (int i = 0; i < numbers.length; i++) {
+			System.out.println(blockSort.blockReductionCount(i+1, true));
+		}*/
+		blockSort.greedyAlgorithm_v1(output);
+		//testLongestRun(output, blockSort);
+		System.out.println(output.toString());
 		
 		/*valueToBeMoved = 2;
 		blockSort.moveAndMerge(valueToBeMoved, false);
@@ -46,6 +52,18 @@ public class BlockSortTest_V5 {
 		System.out.println("Values : "+blockSort.toString());
 		System.out.println("List Size After 4rd Move: "+blockSort.getList().size());*/
 
+	}
+	
+	private static void testRunMerge(StringBuffer output, BlockSort_V5 blockSort){
+		blockSort.print();
+		blockSort.runMerging();
+		blockSort.approximationRatioForLongestRun(output);
+	}
+	
+	private static void testLongestRun(StringBuffer output, BlockSort_V5 blockSort){
+		blockSort.print();
+		blockSort.longestRun();
+		blockSort.approximationRatioForLongestRun(output);
 	}
 
 	public static int[] readNumsFromCommandLine() {

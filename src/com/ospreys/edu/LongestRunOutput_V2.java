@@ -18,27 +18,34 @@ import java.util.StringTokenizer;
  */
 public class LongestRunOutput_V2 {
 	
-	 public static void Permute(int[] input, int startindex, List<String> inputList) {
-	        int size = input.length;
-	        if (size == startindex + 1) {
-	            //System.out.println(counter + "Permutation is");
-	            StringBuffer sb = new StringBuffer();
-	            for (int i = 0; i < size; i++) {
-	                //System.out.print(input[i] + ",  ");
-	                sb.append(input[i]+" ");
-	            }
-	            inputList.add(sb.toString().trim());
-	            //System.out.println();
-	            //System.out.println("##########################");
-	        } else {
-	            for (int i = startindex; i < size; i++) {
-	            	int temp=input[i];
-	            	input[i]=input[startindex];
-	            	input[startindex]=temp;
-	            	Permute(input, startindex+1, inputList);
-	            }
-	        }
-	    }
+	/**
+	 * @param args
+	 *            the command line arguments
+	 */
+	static void printArray(int[] a, List<String> inputList) {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < a.length; i++) {
+			//System.out.print(a[i] + " ");
+			 sb.append(a[i]+" ");
+		}
+		inputList.add(sb.toString().trim());
+		//System.out.println("");
+	}
+
+	static void Permute(int[] a, int k, List<String> inputList) {
+		if (k == a.length)
+			printArray(a,inputList);
+		else
+			for (int i = k; i < a.length; i++) {
+				int temp = a[k];
+				a[k] = a[i];
+				a[i] = temp;
+				Permute(a, k + 1,inputList);
+				temp = a[k];
+				a[k] = a[i];
+				a[i] = temp;
+			}
+	}
 
 	public static void main(String[] args) throws IOException {
 
@@ -67,10 +74,12 @@ public class LongestRunOutput_V2 {
 				blockSort.add(Integer.valueOf((String)st.nextElement()));
 			}
 			//blockSort.setInputsize(size);
-			blockSort.allSubsequencesList();
+			//blockSort.allSubsequencesList();
 			blockSort.print();
 			blockSort.longestRun();
+			//blockSort.runMerging();
 			blockSort.approximationRatioForLongestRun(sb);
+			//blockSort.greedyAlgorithm_v1(sb);
 			//blockSort.threeApproximationMove(sb);
 			//System.out.println(blockSort.findbestMove());
 			sb.append("\n");
