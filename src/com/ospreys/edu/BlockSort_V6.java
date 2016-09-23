@@ -868,6 +868,34 @@ private int getBlockReductionCount(int i, boolean movementInd) {
 		LinkedList<Block> result = null;
 		for (ListIterator<LinkedList<Block>> iterator1 = listOfAllSubsequences.listIterator(); iterator1.hasNext();) {
 			LinkedList<Block> subsequencesListObj = (LinkedList<Block>) iterator1.next();
+			if(subsequencesListObj.size()==3){
+				result =subsequencesListObj;
+				break;
+			}
+		}
+		if(null!=result){   //printing longest run block
+			String values = "";
+			for (int i=0; i<result.size();i++) {
+				Block longestrunBlock = result.get(i);
+				for (int j=0; j<originalList.size();j++) {
+					Block originalBlock = originalList.get(j);
+					if(longestrunBlock.getPre() == originalBlock.getPre() && longestrunBlock.getSuc() ==originalBlock.getSuc()){
+						originalBlock.setInLongestRun(true);
+					}
+				}
+				values = values + getValues(longestrunBlock.getPre(), longestrunBlock.getSuc()) + " ";
+				
+			}
+			//System.out.println("longestrun ----> "+values);
+			//System.out.println("size : "+listSize);
+		}
+	}
+	
+	public void orderedPairFixing(){
+		allSubsequencesList();
+		LinkedList<Block> result = null;
+		for (ListIterator<LinkedList<Block>> iterator1 = listOfAllSubsequences.listIterator(); iterator1.hasNext();) {
+			LinkedList<Block> subsequencesListObj = (LinkedList<Block>) iterator1.next();
 			if(subsequencesListObj.size()==2){
 				result =subsequencesListObj;
 				break;

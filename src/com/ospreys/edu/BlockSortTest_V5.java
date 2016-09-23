@@ -36,7 +36,7 @@ public class BlockSortTest_V5 {
 		/*for (int i = 0; i < numbers.length; i++) {
 			System.out.println(blockSort.blockReductionCount(i+1, true));
 		}*/
-		blockSort.greedyAlgorithm_v1(output);
+		testRunMerge(output,blockSort);
 		//testLongestRun(output, blockSort);
 		System.out.println(output.toString());
 		
@@ -57,6 +57,12 @@ public class BlockSortTest_V5 {
 	private static void testRunMerge(StringBuffer output, BlockSort_V5 blockSort){
 		blockSort.print();
 		blockSort.runMerging();
+		blockSort.approximationRatioForLongestRun(output);
+	}
+	
+	private static void testOrderedPairFixing(StringBuffer output, BlockSort_V5 blockSort){
+		blockSort.print();
+		blockSort.orderedPairFixing();
 		blockSort.approximationRatioForLongestRun(output);
 	}
 	
